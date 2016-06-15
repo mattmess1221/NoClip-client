@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"minVersion": "0.5.5",
+	"package": "com.ponyvillesquare.speed.mixin",
+	"refmap": "mixins.speed.refmap.json",
+	"mixins": [
+		"MixinEntityPlayer",
+		"MixinEntityPlayerSP",
+		"MixinEntityRenderer"
+	]
+}

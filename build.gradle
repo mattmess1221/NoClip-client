@@ -1,0 +1,67 @@
+buildscript {
+	repositories {
+		jcenter()
+		maven {
+			name 'forge'
+			url 'http://files.minecraftforge.net/maven'
+		}
+		maven {
+			name 'sponge'
+			url 'https://repo.spongepowered.org/maven/'
+		}
+		maven {
+			name 'm2'
+			url 'https://plugins.gradle.org/m2'
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
+		classpath 'gradle.plugin.mnm.mods.kappa:ap-ide:1.0.5'
+	}
+}
+
+apply plugin: 'net.minecraftforge.gradle.liteloader'
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'mnm.gradle.ap-ide'
+
+version = '0.0.2-WIP'
+
+minecraft {
+	version = "1.9.4"
+	mappings = "snapshot_20160517"
+    runDir = 'run'
+	replace '@VERSION@', project.version
+}
+sourceSets.main {
+	refMap = 'mixins.speed.refmap.json'
+}
+mixin {
+	defaultObfuscationEnv notch
+}
+afterEvaluate {
+	dependencies {
+		def liteloader = project.plugins['net.minecraftforge.gradle.liteloader']
+		def artifact = liteloader.artifact.libraries.collect{it.name}.find{it.contains 'mixin'}
+		factory artifact
+	}
+	processor {
+		options.reobfSrgFile = mixin.reobfSrgFile
+	}
+}
+// generate the litemod.json file
+litemod.json {
+	author = 'JoyJoy'
+	mixinConfigs += ["mixins.speed.json"]
+//	description = 'The mod that allows you to change the camera height and distance for more immersion!'
+}
+jar {
+	from litemod
+}
+/**
+ * Install the mod into the mods folder
+ */
+task deploy(type: Copy, dependsOn: build) {
+	from jar.archivePath
+	into file("$System.env.APPDATA/.minecraft/mods")
+}
