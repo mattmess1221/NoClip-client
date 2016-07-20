@@ -25,7 +25,7 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
-version = '0.0.2-WIP'
+version = '0.0.3-WIP'
 
 minecraft {
 	version = "1.9.4"

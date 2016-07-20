@@ -69,7 +69,7 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer {
     }
 
     @Redirect(
-            method = "onUpdate()V",
+            method = "onLivingUpdate()V",
             expect = 2,
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerCapabilities;getFlySpeed()F"))
     private float capabilities$flySpeed(PlayerCapabilities capabilities) {
