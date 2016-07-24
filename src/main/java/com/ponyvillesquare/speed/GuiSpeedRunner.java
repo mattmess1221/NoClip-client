@@ -20,7 +20,6 @@ public class GuiSpeedRunner extends GuiScreen implements GuiResponder, FormatHel
         FLY,
         WALK,
         JUMP,
-        STEP,
         FLY_RESET,
         WALK_RESET,
         JUMP_RESET,
@@ -33,17 +32,12 @@ public class GuiSpeedRunner extends GuiScreen implements GuiResponder, FormatHel
     private GuiSlider fly;
     private GuiSlider walk;
     private GuiSlider jump;
-    private GuiCheckbox step;
 
     @Override
     public void initGui() {
         this.toggle = new GuiCheckbox(Settings.TOGGLE.ordinal(), 50, 20, "Toggle Speed");
         this.toggle.checked = this.speed.toggle;
         this.buttonList.add(this.toggle);
-
-        this.step = new GuiCheckbox(Settings.STEP.ordinal(), 50, 34, "Step Assist");
-        this.step.checked = this.speed.step;
-        this.buttonList.add(this.step);
 
         this.fly = new GuiSliderInterv(this, Settings.FLY.ordinal(), 52, 50, "fly modifier", 0, 15, speed.getFlyModifier(), this);
         this.buttonList.add(this.fly);
@@ -77,9 +71,6 @@ public class GuiSpeedRunner extends GuiScreen implements GuiResponder, FormatHel
             break;
         case JUMP_RESET:
             jump.setSliderValue(LiteModSpeedRunner.DEFAULT_SPEED, true);
-            break;
-        case STEP:
-            speed.step = step.checked ^= true;
             break;
         case TOGGLE:
             speed.toggle = toggle.checked ^= true;

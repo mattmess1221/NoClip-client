@@ -40,7 +40,7 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
     public static final String NAME = "SpeedRunner";
     public static final String VERSION = "@VERSION@";
     public static final String PERM_NAME = "speed";
-    public static final float PERM_VERSION = 1F;
+    public static final float PERM_VERSION = 1.1F;
 
     public static final float DEFAULT_SPEED = 1.5F;
 
@@ -52,8 +52,6 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
 
     @Expose
     public boolean toggle;
-    @Expose
-    public boolean step;
     @Expose
     private float walkModifier = DEFAULT_SPEED;
     @Expose
@@ -101,10 +99,6 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
 
     public float getFlyModifier() {
         return getModifier(flyModifier, Perms.FLY);
-    }
-
-    public float getStepModifier() {
-        return getModifier(step ? 2 : 1, Perms.STEP);
     }
 
     private float getModifier(float modif, Perms perm) {
@@ -162,7 +156,7 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
                 buffer.writeByte(0);
                 buffer.writeByte(this.noclip ? 1 : 0);
-                Minecraft.getMinecraft().thePlayer.connection.sendPacket(new CPacketCustomPayload("DaFlight", buffer));
+                minecraft.thePlayer.connection.sendPacket(new CPacketCustomPayload("DaFlight", buffer));
             }
         }
     }
@@ -170,13 +164,16 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
     @Override
     public void onJoinGame(INetHandler netHandler, SPacketJoinGame joinGamePacket, ServerData serverData, RealmsServer realmsServer) {
         this.noclipAllowed = this.noclip = false;
-
-        if (((NetHandlerPlayClient) netHandler).getNetworkManager().isLocalChannel()) {
+        NetHandlerPlayClient client = (NetHandlerPlayClient) netHandler;
+        if (client.getNetworkManager().isLocalChannel()) {
+            // this is a local server.
             this.noclipAllowed = true;
+        } else {
+            // multiplayer. ask about daflight.
+            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeByte(1);
+            client.sendPacket(new CPacketCustomPayload("DaFlight", buffer));
         }
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
-        buffer.writeByte(1);
-        Minecraft.getMinecraft().thePlayer.connection.sendPacket(new CPacketCustomPayload("DaFlight", buffer));
 
     }
 
@@ -227,7 +224,6 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
 
     @Override
     public void onCustomPayload(String channel, PacketBuffer data) {
-        System.out.println(channel);
         if (channel.equals("DaFlight")) {
             byte type = data.readByte();
             byte value = data.readByte();
@@ -238,11 +234,12 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
 
                 String text = "DaFlightManager detected. " + (allowed ? "NoClip allowed!" : "NoClip not allowed!");
 
-                ITextComponent chat = new TextComponentString("[Speed] ").setStyle(new Style().setColor(TextFormatting.DARK_PURPLE));
-                chat.appendText(text);
+                ITextComponent chat = new TextComponentString("[Speed] ")
+                        .setStyle(new Style().setColor(TextFormatting.DARK_PURPLE))
+                        .appendText(text);
 
                 Minecraft.getMinecraft().thePlayer.addChatMessage(chat);
-                this.noclipAllowed = value == 1;
+                this.noclipAllowed = allowed;
             }
         }
 

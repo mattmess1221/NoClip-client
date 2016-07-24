@@ -1,6 +1,6 @@
 {
 	"name": "speedrunner",
-	"mcversion": "1.9.4",
+	"mcversion": "1.10.2",
 	"author": "JoyJoy",
 	"mixinConfigs": [
 		"mixins.speed.json"

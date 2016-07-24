@@ -4,6 +4,5 @@ public enum Perms {
     FLY,
     WALK,
     JUMP,
-    STEP
 
 }

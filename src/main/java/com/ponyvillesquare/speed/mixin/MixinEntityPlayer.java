@@ -15,6 +15,8 @@ import net.minecraft.world.World;
 @Mixin(EntityPlayer.class)
 public abstract class MixinEntityPlayer extends EntityLivingBase {
 
+    private static final String EntityLivingBase = "Lnet/minecraft/entity/EntityLivingBase;";
+
     public MixinEntityPlayer(World worldIn) {
         super(worldIn);
     }
@@ -23,9 +25,9 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
             method = "onUpdate()V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/entity/EntityLivingBase;onUpdate()V",
+                    target = EntityLivingBase + "onUpdate()V",
                     shift = Shift.BEFORE))
-    private void isNoclipping(CallbackInfo ci) {
+    private void updateNoClipping(CallbackInfo ci) {
         this.noClip = LiteModSpeedRunner.instance().isNoclipping();
         if (this.noClip)
             this.onGround = false;

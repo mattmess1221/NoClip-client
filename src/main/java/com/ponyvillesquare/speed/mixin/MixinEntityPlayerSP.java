@@ -10,13 +10,14 @@ import com.ponyvillesquare.speed.LiteModSpeedRunner;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 @Mixin(EntityPlayerSP.class)
 public class MixinEntityPlayerSP extends AbstractClientPlayer {
 
-    private final float ORIGINAL_STEP = 0.6F;
+    private static final String PlayerCapabilities = "Lnet/minecraft/entity/player/PlayerCapabilities;";
 
     public MixinEntityPlayerSP(World worldIn, GameProfile playerProfile) {
         super(worldIn, playerProfile);
@@ -30,18 +31,16 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer {
     }
 
     @Override
-    public void moveEntity(double x, double y, double z) {
-        this.stepHeight = ORIGINAL_STEP * LiteModSpeedRunner.instance().getStepModifier();
-        super.moveEntity(x, y, z);
-    }
-
-    @Override
     public void moveRelative(float strafe, float forward, float friction) {
         LiteModSpeedRunner speed = LiteModSpeedRunner.instance();
         if (!speed.isActive()) {
             super.moveRelative(strafe, forward, friction);
             return;
         }
+
+        // being "on the ground" slows me down.
+        this.onGround = false;
+
         float f = strafe * strafe + forward * forward;
 
         if (f >= 1.0E-4F) {
@@ -50,9 +49,9 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer {
             if (f < 1.0F) {
                 f = 1.0F;
             }
-
-            // replace friction with grass
-            friction = 0.099999F;
+            // redo friction
+            float slip = (float) (0.16277136F / Math.pow(Blocks.AIR.slipperiness, 3));
+            friction = this.getAIMoveSpeed() * slip;
 
             f = friction / f;
 
@@ -70,9 +69,11 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer {
 
     @Redirect(
             method = "onLivingUpdate()V",
-            expect = 2,
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerCapabilities;getFlySpeed()F"))
-    private float capabilities$flySpeed(PlayerCapabilities capabilities) {
+            at = @At(
+                    value = "INVOKE",
+                    target = PlayerCapabilities + "getFlySpeed()F"))
+    // vertical flight
+    private float getVerticalFlySpeed(PlayerCapabilities capabilities) {
 
         LiteModSpeedRunner speed = LiteModSpeedRunner.instance();
         float modifier = speed.isActive() ? speed.getFlyModifier() : 1F;

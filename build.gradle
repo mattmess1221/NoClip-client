@@ -25,11 +25,11 @@ apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'mnm.gradle.ap-ide'
 
-version = '0.0.3-WIP'
+version = '0.0.4'
 
 minecraft {
-	version = "1.9.4"
-	mappings = "snapshot_20160517"
+	version = "1.10.2"
+	mappings = "snapshot_20160704"
     runDir = 'run'
 	replace '@VERSION@', project.version
 }
@@ -53,15 +53,8 @@ afterEvaluate {
 litemod.json {
 	author = 'JoyJoy'
 	mixinConfigs += ["mixins.speed.json"]
-//	description = 'The mod that allows you to change the camera height and distance for more immersion!'
+	description = 'Simple mod to change your walking and flying speed. Also supports noclip.'
 }
 jar {
 	from litemod
-}
-/**
- * Install the mod into the mods folder
- */
-task deploy(type: Copy, dependsOn: build) {
-	from jar.archivePath
-	into file("$System.env.APPDATA/.minecraft/mods")
 }

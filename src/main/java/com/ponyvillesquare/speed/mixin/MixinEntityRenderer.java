@@ -13,12 +13,15 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 @Mixin(EntityRenderer.class)
 public abstract class MixinEntityRenderer implements IResourceManagerReloadListener {
 
+    private static final String EntityPlayerSP = "Lnet/minecraft/client/entity/EntityPlayerSP;";
+
     @Redirect(
             method = "renderWorldPass(IFJ)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/entity/EntityPlayerSP;isSpectator()Z"))
+                    target = EntityPlayerSP + "isSpectator()Z"))
     private boolean fixSpectator(EntityPlayerSP player) {
+        // fixes the world being culled while noclipping underground
         return player.isSpectator() || LiteModSpeedRunner.instance().isNoclipping();
     }
 }
