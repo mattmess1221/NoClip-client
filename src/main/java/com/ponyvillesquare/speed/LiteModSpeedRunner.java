@@ -1,10 +1,5 @@
 package com.ponyvillesquare.speed;
 
-import java.io.File;
-import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-
 import com.google.common.collect.ImmutableList;
 import com.google.gson.annotations.Expose;
 import com.mojang.realmsclient.dto.RealmsServer;
@@ -18,7 +13,6 @@ import com.mumfrey.liteloader.modconfig.ConfigStrategy;
 import com.mumfrey.liteloader.modconfig.ExposableOptions;
 import com.mumfrey.liteloader.permissions.PermissionsManager;
 import com.mumfrey.liteloader.permissions.PermissionsManagerClient;
-
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -33,7 +27,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Keyboard;
 
+import java.io.File;
+import java.util.List;
+
+@SuppressWarnings("ALL")
 @ExposableOptions(strategy = ConfigStrategy.Unversioned)
 public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGameListener, PluginChannelListener, Permissible {
 
@@ -106,14 +105,14 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
     }
 
     public boolean isActive() {
-        return (permissions != null ? permissions.hasRights() : true) && active;
+        return (permissions == null || permissions.hasRights()) && active;
     }
 
     public boolean isNoclipping() {
         if (!noclipAllowed) {
             noclip = false;
         }
-        return noclip && Minecraft.getMinecraft().thePlayer.capabilities.isFlying;
+        return noclip && Minecraft.getMinecraft().player.capabilities.isFlying;
     }
 
     public void setWalkModifier(float walkModifier) {
@@ -156,7 +155,7 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
                 buffer.writeByte(0);
                 buffer.writeByte(this.noclip ? 1 : 0);
-                minecraft.thePlayer.connection.sendPacket(new CPacketCustomPayload("DaFlight", buffer));
+                minecraft.player.connection.sendPacket(new CPacketCustomPayload("DaFlight", buffer));
             }
         }
     }
@@ -238,7 +237,7 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
                         .setStyle(new Style().setColor(TextFormatting.DARK_PURPLE))
                         .appendText(text);
 
-                Minecraft.getMinecraft().thePlayer.addChatMessage(chat);
+                Minecraft.getMinecraft().player.sendStatusMessage(chat, true);
                 this.noclipAllowed = allowed;
             }
         }

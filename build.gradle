@@ -9,27 +9,21 @@ buildscript {
 			name 'sponge'
 			url 'https://repo.spongepowered.org/maven/'
 		}
-		maven {
-			name 'm2'
-			url 'https://plugins.gradle.org/m2'
-		}
 	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
 		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
-		classpath 'gradle.plugin.mnm.mods.kappa:ap-ide:1.0.5'
 	}
 }
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'mnm.gradle.ap-ide'
 
-version = '0.0.4'
+version = '0.1.0'
 
 minecraft {
-	version = "1.10.2"
-	mappings = "snapshot_20160704"
+	version = "1.11"
+	mappings = "snapshot_20161120"
     runDir = 'run'
 	replace '@VERSION@', project.version
 }
@@ -38,16 +32,6 @@ sourceSets.main {
 }
 mixin {
 	defaultObfuscationEnv notch
-}
-afterEvaluate {
-	dependencies {
-		def liteloader = project.plugins['net.minecraftforge.gradle.liteloader']
-		def artifact = liteloader.artifact.libraries.collect{it.name}.find{it.contains 'mixin'}
-		factory artifact
-	}
-	processor {
-		options.reobfSrgFile = mixin.reobfSrgFile
-	}
 }
 // generate the litemod.json file
 litemod.json {

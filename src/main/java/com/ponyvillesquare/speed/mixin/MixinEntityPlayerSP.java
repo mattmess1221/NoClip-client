@@ -1,19 +1,17 @@
 package com.ponyvillesquare.speed.mixin;
 
+import com.mojang.authlib.GameProfile;
+import com.ponyvillesquare.speed.LiteModSpeedRunner;
+import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.mojang.authlib.GameProfile;
-import com.ponyvillesquare.speed.LiteModSpeedRunner;
-
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.entity.player.PlayerCapabilities;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-
+@SuppressWarnings("EntityConstructor")
 @Mixin(EntityPlayerSP.class)
 public class MixinEntityPlayerSP extends AbstractClientPlayer {
 
@@ -44,13 +42,13 @@ public class MixinEntityPlayerSP extends AbstractClientPlayer {
         float f = strafe * strafe + forward * forward;
 
         if (f >= 1.0E-4F) {
-            f = MathHelper.sqrt_float(f);
+            f = MathHelper.sqrt(f);
 
             if (f < 1.0F) {
                 f = 1.0F;
             }
             // redo friction
-            float slip = (float) (0.16277136F / Math.pow(Blocks.AIR.slipperiness, 3));
+            float slip = (float) (0.16277136F / Math.pow(0.6, 3));
             friction = this.getAIMoveSpeed() * slip;
 
             f = friction / f;
