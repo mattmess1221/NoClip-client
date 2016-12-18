@@ -237,7 +237,7 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
                         .setStyle(new Style().setColor(TextFormatting.DARK_PURPLE))
                         .appendText(text);
 
-                Minecraft.getMinecraft().player.sendStatusMessage(chat, true);
+                Minecraft.getMinecraft().player.sendMessage(chat);
                 this.noclipAllowed = allowed;
             }
         }
