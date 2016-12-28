@@ -101,7 +101,9 @@ public class LiteModSpeedRunner implements Tickable, HUDRenderListener, JoinGame
     }
 
     private float getModifier(float modif, Perms perm) {
-        return permissions.can(perm) ? modif : 1F;
+        // only enable when flymode is allowed.
+        boolean canFly = Minecraft.getMinecraft().player.capabilities.allowFlying;
+        return canFly && permissions.can(perm) ? modif : 1F;
     }
 
     public boolean isActive() {
