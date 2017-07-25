@@ -1,8 +1,8 @@
 {
-	"name": "speedrunner",
+	"name": "noclip",
 	"mcversion": "1.10.2",
 	"author": "JoyJoy",
 	"mixinConfigs": [
-		"mixins.speed.json"
+		"mixins.noclip.json"
 	]
 }

@@ -11,7 +11,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
 	}
 }
@@ -19,16 +19,16 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '0.1.1'
+version = '0.2'
 
 minecraft {
-	version = "1.11.2"
-	mappings = "snapshot_20161224"
+	version = "1.12"
+	mappings = "snapshot_20170627"
     runDir = 'run'
 	replace '@VERSION@', project.version
 }
 sourceSets.main {
-	refMap = 'mixins.speed.refmap.json'
+	ext.refMap = 'mixins.noclip.refmap.json'
 }
 mixin {
 	defaultObfuscationEnv notch
@@ -37,8 +37,8 @@ mixin {
 litemod.json {
 	author = 'JoyJoy'
 	mixinConfigs += ["mixins.speed.json"]
-	description = 'Simple mod to change your walking and flying speed. Also supports noclip.'
+	description = 'Enables noclip for non-spectator gamemodes. Default key: N'
 }
 jar {
-	from litemod
+	from tasks.litemod.outputs
 }
