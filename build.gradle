@@ -12,18 +12,18 @@ buildscript {
 	}
 	dependencies {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-		classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
+		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
 	}
 }
 
 apply plugin: 'net.minecraftforge.gradle.liteloader'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '0.2'
+version = '1.0'
 
 minecraft {
-	version = "1.12"
-	mappings = "snapshot_20170627"
+	version = "1.12.2"
+	mappings = "snapshot_20170919"
     runDir = 'run'
 	replace '@VERSION@', project.version
 }
@@ -36,6 +36,7 @@ mixin {
 // generate the litemod.json file
 litemod.json {
 	author = 'JoyJoy'
+	mcversion = '1.12.r2'
 	mixinConfigs += ["mixins.speed.json"]
 	description = 'Enables noclip for non-spectator gamemodes. Default key: N'
 }

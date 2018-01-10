@@ -38,7 +38,7 @@ public class LiteModNoClip implements Tickable, HUDRenderListener, JoinGameListe
     private boolean noclip;
     private boolean noclipAllowed;
 
-    private KeyBinding keyNoclip = new KeyBinding("speed.noclip", Keyboard.KEY_N, NAME);
+    private KeyBinding keyNoclip = new KeyBinding("noclip.noclip", Keyboard.KEY_N, NAME);
 
     public static LiteModNoClip instance() {
         return INSTANCE;
@@ -113,11 +113,9 @@ public class LiteModNoClip implements Tickable, HUDRenderListener, JoinGameListe
     @Override
     public void onCustomPayload(String channel, PacketBuffer data) {
         if (CHANNEL.equals(channel)) {
-            
-            byte value = data.readByte();
 
             // noclip
-            boolean allowed = value == 1;
+            boolean allowed = data.readBoolean();
 
             String text = "Plugin detected. " + (allowed ? "NoClip allowed!" : "NoClip not allowed!");
 
